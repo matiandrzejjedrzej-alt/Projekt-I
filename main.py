@@ -15,4 +15,4 @@ if __name__ == '__main__':
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm
 print("Cześć")
-print("Próba")
+print("Próba 7878778")
