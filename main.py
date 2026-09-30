@@ -1,6 +1,6 @@
 
 
-#Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++
+#Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #funkcja do wyszukiwania zadanego fragmentu w sekwencji
 def znajdz_fragment(sekwencja, fragment):
     lista_pozycji = []
@@ -33,6 +33,7 @@ def sprawdz_fragment(fragment):
             return False
     return True
 
+#funkcja do sprawdzenia pliku i sekwencji
 def sprawdzenie_sekwencji(sekwencja):
     while True:
         if sekwencja == "":
@@ -42,9 +43,16 @@ def sprawdzenie_sekwencji(sekwencja):
                 return False
         return True
 
+#funkcja podział sekwencji na segemnty
+def podział_segmenty (sekwencja, długość_segmentu):
+    segmenty = []
+    for i in range(0, len(sekwencja), długość_segmentu):
+        segment = sekwencja[i:i + długość_segmentu]
+        segmenty.append(segment)
+    return segmenty
 
 
-#Program+++++++++++++++++++++++++++++++++++++++++++++++++++++
+#Program++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 print("Program motywy DNA")
 print("Autor Mateusz Nowaczyk")
 while True: #podanie nazwy pliku
@@ -95,4 +103,15 @@ else:
     for pozycja in pozycje:
         print(f"{pozycja[0]}-{pozycja[1]}")
 
+długość_segemntu = int(input("Podaj na jakiej długości segmenty chcesz podzielić sekwencję: "))
+
+segmenty = podział_segmenty(sekwencja, długość_segemntu) #lista segmentów
+
+pozycje_dla_segmentów = []
+for i in segmenty:
+    pozycje = znajdz_fragment(i, fragment)
+    pozycje_dla_segmentów.append(pozycje)  #lista pozycji fragmentu w segmentach
+
+for i in pozycje_dla_segmentów:
+    print(len(i))
 
