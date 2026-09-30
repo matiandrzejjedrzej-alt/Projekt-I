@@ -1,4 +1,5 @@
 
+import matplotlib.pyplot as plt
 
 #Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #funkcja do wyszukiwania zadanego fragmentu w sekwencji
@@ -110,8 +111,26 @@ segmenty = podział_segmenty(sekwencja, długość_segemntu) #lista segmentów
 pozycje_dla_segmentów = []
 for i in segmenty:
     pozycje = znajdz_fragment(i, fragment)
-    pozycje_dla_segmentów.append(pozycje)  #lista pozycji fragmentu w segmentach
+    pozycje_dla_segmentów.append(pozycje)  #lista pozycji z fragmentem w segmentach
 
+liczba_wystąpień = []
 for i in pozycje_dla_segmentów:
-    print(len(i))
+    liczba_wystąpień.append(len(i)) # lista z liczbą wystąpień fragmentu dla każdego segmentu
+
+print(liczba_wystąpień)
+liczba_segmentów = []
+for i in range (1, len(segmenty)+1):
+    liczba_segmentów.append(i)   #lista z numerami segmentów
+print(liczba_segmentów)
+
+#wykres słupkowy- liczba wystąpień na segemnt
+plt.bar(liczba_segmentów, liczba_wystąpień)
+
+plt.xlabel("Segment")
+plt.ylabel("Liczba wystąpień")
+plt.title("Liczba wystąpień fragmentu DNA w segmentach")
+plt.xlim(1,len(liczba_segmentów))
+plt.yticks(range(max(liczba_wystąpień) + 1))
+plt.show()
+
 
