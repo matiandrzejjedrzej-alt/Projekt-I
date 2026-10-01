@@ -132,5 +132,22 @@ plt.title("Liczba wystąpień fragmentu DNA w segmentach")
 plt.xlim(1,len(liczba_segmentów))
 plt.yticks(range(max(liczba_wystąpień) + 1))
 plt.show()
+print(pozycje)
+
+#wykres wystąpienia fragmentu w obrębie sekwencji
+plt.figure()
+
+for pozycja in pozycje:
+    plt.hlines(1, pozycja[0], pozycja[1])
+
+plt.title("Wystąpienia fragmentu w obrębie sekwencji")
+plt.xlabel("Pozycja [nt]")
+plt.ylabel("Wystąpienie")
+
+plt.xlim(1, len(sekwencja))
+plt.ylim(0, 2)
+plt.yticks([1])
+
+plt.show()
 
 
