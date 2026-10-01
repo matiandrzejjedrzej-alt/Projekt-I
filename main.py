@@ -89,18 +89,13 @@ while True: #sprawdzenie, czy fragment składa się z ACGT
 
 pozycje = znajdz_fragment(sekwencja, fragment)
 
-print()
+
 
 if len(pozycje) == 0:
-
     print("Nie znaleziono podanego fragmentu.")
-
 else:
-
     print(f"Liczba wystąpień: {len(pozycje)}")
-
     print("Pozycje wystąpień:")
-
     for pozycja in pozycje:
         print(f"{pozycja[0]}-{pozycja[1]}")
 
@@ -110,18 +105,20 @@ segmenty = podział_segmenty(sekwencja, długość_segemntu) #lista segmentów
 
 pozycje_dla_segmentów = []
 for i in segmenty:
-    pozycje = znajdz_fragment(i, fragment)
-    pozycje_dla_segmentów.append(pozycje)  #lista pozycji z fragmentem w segmentach
+    pozycje_seg = znajdz_fragment(i, fragment)
+    pozycje_dla_segmentów.append(pozycje_seg)  #lista pozycji z fragmentem w segmentach
 
 liczba_wystąpień = []
 for i in pozycje_dla_segmentów:
     liczba_wystąpień.append(len(i)) # lista z liczbą wystąpień fragmentu dla każdego segmentu
 
-print(liczba_wystąpień)
+
 liczba_segmentów = []
 for i in range (1, len(segmenty)+1):
     liczba_segmentów.append(i)   #lista z numerami segmentów
+print(liczba_wystąpień)
 print(liczba_segmentów)
+print(pozycje)
 
 #wykres słupkowy- liczba wystąpień na segemnt
 plt.bar(liczba_segmentów, liczba_wystąpień)
@@ -130,24 +127,22 @@ plt.xlabel("Segment")
 plt.ylabel("Liczba wystąpień")
 plt.title("Liczba wystąpień fragmentu DNA w segmentach")
 plt.xlim(1,len(liczba_segmentów))
+plt.xticks(range(1, len(liczba_segmentów) + 1))
 plt.yticks(range(max(liczba_wystąpień) + 1))
 plt.show()
-print(pozycje)
 
 #wykres wystąpienia fragmentu w obrębie sekwencji
 plt.figure()
 
 for pozycja in pozycje:
-    plt.hlines(1, pozycja[0], pozycja[1])
+    plt.hlines(0.005, pozycja[0], pozycja[1])
 
 plt.title("Wystąpienia fragmentu w obrębie sekwencji")
 plt.xlabel("Pozycja [nt]")
-plt.ylabel("Wystąpienie")
-
 plt.xlim(1, len(sekwencja))
-plt.ylim(0, 2)
-plt.yticks([1])
-
+plt.ylim(0, 0.1)
+plt.gca().get_yaxis().set_visible(False) #oś Y niewidoczna
 plt.show()
+
 
 
