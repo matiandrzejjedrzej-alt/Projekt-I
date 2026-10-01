@@ -1,5 +1,8 @@
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
 
 #Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #funkcja do wyszukiwania zadanego fragmentu w sekwencji
@@ -116,9 +119,24 @@ for i in pozycje_dla_segmentów:
 liczba_segmentów = []
 for i in range (1, len(segmenty)+1):
     liczba_segmentów.append(i)   #lista z numerami segmentów
-print(liczba_wystąpień)
-print(liczba_segmentów)
-print(pozycje)
+
+#statystyka wystąpień
+dane_statystyczne = np.array(liczba_wystąpień)
+średnia_wystąpień = np.mean(dane_statystyczne)
+maksimum_wystąpień = np.max(dane_statystyczne)
+
+print("Statystyka wystąpień:")
+print(f"Średnia liczba wystąpień na segment: {średnia_wystąpień:.2f}")
+print(f"Maksimum: {maksimum_wystąpień}")
+
+#tworzenie tabeli ze statystyką do CSV
+tabela = pd.DataFrame({ "Segment": liczba_segmentów,
+    "Liczba wystąpień": liczba_wystąpień
+})
+
+tabela.to_csv("wyniki.csv", index=False)
+
+
 
 #wykres słupkowy- liczba wystąpień na segemnt
 plt.bar(liczba_segmentów, liczba_wystąpień)
@@ -126,7 +144,7 @@ plt.bar(liczba_segmentów, liczba_wystąpień)
 plt.xlabel("Segment")
 plt.ylabel("Liczba wystąpień")
 plt.title("Liczba wystąpień fragmentu DNA w segmentach")
-plt.xlim(1,len(liczba_segmentów))
+plt.xlim(0.5,len(liczba_segmentów) + 0.5)
 plt.xticks(range(1, len(liczba_segmentów) + 1))
 plt.yticks(range(max(liczba_wystąpień) + 1))
 plt.show()
