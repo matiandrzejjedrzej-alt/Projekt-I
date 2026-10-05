@@ -62,8 +62,9 @@ def wyszukaj_ORF(sekwencja):
     start_ORF = 0
     stop_ORF = 0
     kodony_stop = ["TAA", "TGA", "TAG"]
+    i = 0
+    while i < len(sekwencja):
 
-    for i in range(len(sekwencja)):
         if sekwencja[i:i + 3] == "ATG":
             start_ORF = i
 
@@ -71,12 +72,14 @@ def wyszukaj_ORF(sekwencja):
                 if sekwencja[j:j + 3] in kodony_stop:
                     stop_ORF = j
                     lista_ORF.append([start_ORF + 1, stop_ORF + 3, sekwencja[start_ORF:stop_ORF + 3]])
+                    i = stop_ORF + 3
                     break
+            else:
+                i += 1
+        else:
+            i += 1
 
     return lista_ORF
-
-wynik_ORF = wyszukaj_ORF(sekwencja)
-print(wynik)
 
 
 
@@ -151,7 +154,7 @@ maksimum_wystąpień = np.max(dane_statystyczne)
 
 print("Statystyka wystąpień:")
 print(f"Średnia liczba wystąpień na segment: {średnia_wystąpień:.2f}")
-print(f"Maksimum: {maksimum_wystąpień}")
+print(f"Maksimum wystąpień fragmentu na segment : {maksimum_wystąpień}")
 
 #tworzenie tabeli ze statystyką do CSV
 tabela = pd.DataFrame({ "Segment": liczba_segmentów,
@@ -186,5 +189,15 @@ plt.ylim(0, 0.1)
 plt.gca().get_yaxis().set_visible(False) #oś Y niewidoczna
 plt.show()
 
+lista_ORF = wyszukaj_ORF(sekwencja)
 
+print("Tabela potencjalne ORF")
+df = pd.DataFrame(
+    lista_ORF,
+    columns=["Początek ORF", "Koniec ORF", "Sekwencja ORF"]
+)
+
+print(df)
+
+df.to_csv("Wyniki/orfy.csv", index=False)
 
