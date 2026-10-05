@@ -189,6 +189,7 @@ plt.ylim(0, 0.1)
 plt.gca().get_yaxis().set_visible(False) #oś Y niewidoczna
 plt.show()
 
+#wyszukiwanie ORF w sekwencji i wrzucenie danych do tabeli
 lista_ORF = wyszukaj_ORF(sekwencja)
 
 print("Tabela potencjalne ORF")
@@ -199,5 +200,5 @@ df = pd.DataFrame(
 
 print(df)
 
-df.to_csv("Wyniki/orfy.csv", index=False)
+df.to_csv("ORFs.csv", index=False)
 
