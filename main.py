@@ -56,6 +56,29 @@ def podział_segmenty (sekwencja, długość_segmentu):
         segmenty.append(segment)
     return segmenty
 
+#wyszukiwanie ORF
+def wyszukaj_ORF(sekwencja):
+    lista_ORF = []
+    start_ORF = 0
+    stop_ORF = 0
+    kodony_stop = ["TAA", "TGA", "TAG"]
+
+    for i in range(len(sekwencja)):
+        if sekwencja[i:i + 3] == "ATG":
+            start_ORF = i
+
+            for j in range(i + 3, len(sekwencja), 3):
+                if sekwencja[j:j + 3] in kodony_stop:
+                    stop_ORF = j
+                    lista_ORF.append([start_ORF + 1, stop_ORF + 3, sekwencja[start_ORF:stop_ORF + 3]])
+                    break
+
+    return lista_ORF
+
+wynik_ORF = wyszukaj_ORF(sekwencja)
+print(wynik)
+
+
 
 #Program++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 print("Program motywy DNA")
