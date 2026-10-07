@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 
 #Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -117,9 +119,7 @@ while True: #sprawdzenie, czy fragment składa się z ACGT
     else:
         print("Nieprawidłowa sekwencja. Dozwolone znaki to A, T, G i C.")
 
-pozycje = znajdz_fragment(sekwencja, fragment)
-
-
+pozycje = znajdz_fragment(sekwencja, fragment) #szukanie fragmentu w sekwencji
 
 if len(pozycje) == 0:
     print("Nie znaleziono podanego fragmentu.")
@@ -142,7 +142,6 @@ liczba_wystąpień = []
 for i in pozycje_dla_segmentów:
     liczba_wystąpień.append(len(i)) # lista z liczbą wystąpień fragmentu dla każdego segmentu
 
-
 liczba_segmentów = []
 for i in range (1, len(segmenty)+1):
     liczba_segmentów.append(i)   #lista z numerami segmentów
@@ -154,14 +153,14 @@ maksimum_wystąpień = np.max(dane_statystyczne)
 
 print("Statystyka wystąpień:")
 print(f"Średnia liczba wystąpień na segment: {średnia_wystąpień:.2f}")
-print(f"Maksimum wystąpień fragmentu na segment : {maksimum_wystąpień}")
+print(f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
 
 #tworzenie tabeli ze statystyką do CSV
 tabela = pd.DataFrame({ "Segment": liczba_segmentów,
     "Liczba wystąpień": liczba_wystąpień
 })
 
-tabela.to_csv("wyniki.csv", index=False)
+tabela.to_csv("Wyniki/wyniki.csv", index=False)
 
 
 
@@ -204,3 +203,24 @@ print(df)
 
 df.to_csv("ORFs.csv", index=False)
 
+pdfmetrics.registerFont(
+    TTFont("DejaVuSans", r"Czcionki\DejaVuSans.ttf")
+)
+
+pdf = canvas.Canvas("Wyniki/raport.pdf")
+pdf.setFont("DejaVuSans", 12)
+
+pozycja_y = 800
+pdf.drawString(100, pozycja_y, "Raport analizy sekwencji DNA")
+pdf.drawString(100, pozycja_y - 20, f"Długość sekwencji: {len(sekwencja)} nt")
+pdf.drawString(100, pozycja_y - 40, f"Szukany fragment: {fragment}")
+pdf.drawString(100, pozycja_y - 60, f"Liczba wystąpień: {len(pozycje)}")
+
+pdf.drawString(100, pozycja_y -80 , f"Pozycje wystąpień fragmentu w sekwencji: ")
+pdf.drawString(100, pozycja_y -100 , f"Wybrana długość segemntów: {długość_segemntu}")
+pdf.drawString(100, pozycja_y -120 , f"Liczba wystąpień fragmentu w poszczególnych segmentach: ")
+pdf.drawString(100, pozycja_y -140 , f"Średnia liczba wystąpień fragmentu na segment: ")
+pdf.drawString(100, pozycja_y -160 , f"Maksimum wystąpień fragmentu na segment: ")
+pdf.drawString(100, pozycja_y -180 , f"Przewidywane ORF w sekwencji: ")
+
+pdf.save()
