@@ -175,6 +175,7 @@ plt.xlim(0.5,len(liczba_segmentów) + 0.5)
 plt.xticks(range(1, len(liczba_segmentów) + 1))
 plt.yticks(range(max(liczba_wystąpień) + 1))
 plt.show()
+plt.savefig("Wyniki/wykres_segmenty.png")
 
 #wykres wystąpienia fragmentu w obrębie sekwencji
 plt.figure()
@@ -188,6 +189,7 @@ plt.xlim(1, len(sekwencja))
 plt.ylim(0, 0.1)
 plt.gca().get_yaxis().set_visible(False) #oś Y niewidoczna
 plt.show()
+plt.savefig("Wyniki/wykres_pozycje")
 
 #wyszukiwanie ORF w sekwencji i wrzucenie danych do tabeli
 lista_ORF = wyszukaj_ORF(sekwencja)
