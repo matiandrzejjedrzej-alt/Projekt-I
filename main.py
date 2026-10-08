@@ -9,6 +9,7 @@ from reportlab.platypus import Table, TableStyle, Image
 from reportlab.lib import colors
 
 
+
 #Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #funkcja do wyszukiwania zadanego fragmentu w sekwencji
 def znajdz_fragment(sekwencja, fragment):
@@ -136,6 +137,12 @@ zestawienie_wystąpień = pd.DataFrame(pozycje, columns = ["Początek","Koniec"]
 
 zestawienie_wystąpień.to_csv("Wyniki/wystąpienia_fragmentu.csv", index=False)
 
+#przekształcenie do formatu wymaganego do przeniesienia do PDF
+dane_wystąpień = [list(zestawienie_wystąpień.columns)] + zestawienie_wystąpień.values.tolist()
+
+tabela_wystąpienia_fragmentu = Table(dane_wystąpień)
+
+
 długość_segemntu = int(input("Podaj na jakiej długości segmenty chcesz podzielić sekwencję: "))
 
 segmenty = podział_segmenty(sekwencja, długość_segemntu) #lista segmentów
@@ -210,8 +217,9 @@ print(df)
 
 df.to_csv("ORFs.csv", index=False)
 
+# Tworzenie raportu PDF++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pdfmetrics.registerFont(
-    TTFont("DejaVuSans", r"Czcionki\DejaVuSans.ttf")
+    TTFont("DejaVuSans", r"Czcionki\DejaVuSans.ttf") #wprowadzenie czcionki z polskimi znakami
 )
 
 pdf = canvas.Canvas("Wyniki/raport.pdf")
@@ -224,6 +232,12 @@ pdf.drawString(100, pozycja_y - 60, f"Szukany fragment: {fragment}")
 pdf.drawString(100, pozycja_y - 80, f"Liczba wystąpień: {len(pozycje)}")
 pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji: ")
 
+tabela_wystąpienia_fragmentu.wrapOn(pdf, 400, 300) #wymiary tabeli
+tabela_wystąpienia_fragmentu.drawOn(pdf,100,pozycja_y - 250) #położenie tabeli
+
+
+pdf.showPage() #następna strone
+pdf.setFont("DejaVuSans", 12)
 pdf.drawString(100, pozycja_y -200 , f"Wybrana długość segemntów: {długość_segemntu}")
 pdf.drawString(100, pozycja_y -220 , f"Liczba wystąpień fragmentu w poszczególnych segmentach")
 
