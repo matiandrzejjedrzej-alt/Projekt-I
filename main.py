@@ -190,21 +190,8 @@ plt.yticks(range(max(liczba_wystąpień) + 1))
 plt.savefig("Wyniki/wykres_segmenty.png", bbox_inches="tight")
 plt.close()
 
-#wykres wystąpienia fragmentu w obrębie sekwencji
-plt.figure()
 
-for pozycja in pozycje:
-    plt.hlines(0.005, pozycja[0], pozycja[1])
-
-plt.title("Wystąpienia fragmentu w obrębie sekwencji")
-plt.xlabel("Pozycja [nt]")
-plt.xlim(1, len(sekwencja))
-plt.ylim(0, 0.1)
-plt.gca().get_yaxis().set_visible(False) #oś Y niewidoczna
-plt.show()
-plt.savefig("Wyniki/wykres_pozycje")
-
-#wyszukiwanie ORF w sekwencji i wrzucenie danych do tabeli
+#wyszukiwanie ORF w sekwencji i wrzucenie danych do tabeli CSV
 lista_ORF = wyszukaj_ORF(sekwencja)
 
 print("Tabela potencjalne ORF")
@@ -215,7 +202,26 @@ df = pd.DataFrame(
 
 print(df)
 
-df.to_csv("ORFs.csv", index=False)
+df.to_csv("Wyniki/ORFs.csv", index=False)
+
+#wykres wystąpienia fragmentu w obrębie sekwencji
+plt.figure()
+
+for pozycja in pozycje:
+    plt.hlines(0.005, pozycja[0], pozycja[1])
+
+for orf in lista_ORF:
+    plt.hlines(0.01, orf[0], orf[1], color="red")
+
+plt.title("Wystąpienia fragmentu i potencjalne ORF w obrębie sekwencji")
+plt.xlabel("Pozycja [nt]")
+plt.xlim(1, len(sekwencja))
+plt.ylim(0, 0.1)
+plt.yticks([0.005, 0.01], ["Fragment DNA", "ORF"])
+plt.savefig("Wyniki/wykres_pozycje.png", bbox_inches="tight")
+plt.close()
+
+
 
 # Tworzenie raportu PDF++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pdfmetrics.registerFont(
@@ -234,7 +240,7 @@ pdf.drawString(100, pozycja_y, "Raport analizy sekwencji DNA")
 pdf.setFont("DejaVuSans", 12)
 pdf.drawString(100, pozycja_y - 40, f"Długość sekwencji: {len(sekwencja)} nt")
 pdf.drawString(100, pozycja_y - 60, f"Szukany fragment: {fragment}")
-pdf.drawString(100, pozycja_y - 80, f"Liczba wystąpień: {len(pozycje)}")
+pdf.drawString(100, pozycja_y - 80, f"Liczba wystąpień fragmentu w sekwencji: {len(pozycje)}")
 pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji: ")
 
 #styl tabeli
@@ -251,15 +257,23 @@ tabela_wystąpienia_fragmentu.drawOn(pdf,250,pozycja_y - 100 - odstęp - wysoko�
 
 pdf.showPage() #strona 2
 pdf.setFont("DejaVuSans", 12)
-pdf.drawString(100, pozycja_y, f"Przewidywane ORF w sekwencji oraz umiejscowienie szukanego fragmentu. ")
-#wykres z dodanym zaznaczeniem ORFów
+
+#wykres umiejscowienie fragmentu i ORFów
+wykres_fragment_ORF = ImageReader("Wyniki/wykres_pozycje.png")
+pdf.drawImage(
+    wykres_fragment_ORF,
+    100,
+    450,
+    width=400,
+    height=300
+)
 
 
 pdf.showPage() #strona 3
 pdf.setFont("DejaVuSans", 12)
 
 pdf.drawString(100, pozycja_y, f"Wybrana długość segmentów: {długość_segemntu}")
-pdf.drawString(100, pozycja_y -20 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień} ")
+pdf.drawString(100, pozycja_y -20 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień:.2f} ")
 pdf.drawString(100, pozycja_y -40 , f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
 #wykres słupkowy
 wykres = ImageReader("Wyniki/wykres_segmenty.png")
@@ -267,7 +281,7 @@ wykres = ImageReader("Wyniki/wykres_segmenty.png")
 pdf.drawImage(
     wykres,
     100,
-    300,
+    400,
     width=400,
     height=300
 )
