@@ -222,27 +222,48 @@ pdfmetrics.registerFont(
     TTFont("DejaVuSans", r"Czcionki\DejaVuSans.ttf") #wprowadzenie czcionki z polskimi znakami
 )
 
-pdf = canvas.Canvas("Wyniki/raport.pdf")
-pdf.setFont("DejaVuSans", 12)
+pdfmetrics.registerFont(
+    TTFont("DejaVuSans-Bold", "Czcionki/DejaVuSans-Bold.ttf") #wprowadzenie czcionki pogrubionej
+)
 
+pdf = canvas.Canvas("Wyniki/raport.pdf")
+
+pdf.setFont("DejaVuSans-Bold", 14)
 pozycja_y = 800
 pdf.drawString(100, pozycja_y, "Raport analizy sekwencji DNA")
+pdf.setFont("DejaVuSans", 12)
 pdf.drawString(100, pozycja_y - 40, f"Długość sekwencji: {len(sekwencja)} nt")
 pdf.drawString(100, pozycja_y - 60, f"Szukany fragment: {fragment}")
 pdf.drawString(100, pozycja_y - 80, f"Liczba wystąpień: {len(pozycje)}")
-pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji: ")
+pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji. ")
 
+#styl tabeli
+tabela_wystąpienia_fragmentu.setStyle(TableStyle([
+    ("FONTNAME", (0, 0), (-1, -1), "DejaVuSans"),
+    ("GRID", (0, 0), (-1, -1), 1, colors.black)
+]))
 tabela_wystąpienia_fragmentu.wrapOn(pdf, 400, 300) #wymiary tabeli
-tabela_wystąpienia_fragmentu.drawOn(pdf,100,pozycja_y - 250) #położenie tabeli
+
+odstęp = 20
+szerokość_tabeli, wysokość_tabeli = tabela_wystąpienia_fragmentu.wrap(400, 300)
+tabela_wystąpienia_fragmentu.drawOn(pdf,250,pozycja_y - 100 - odstęp - wysokość_tabeli)  #położenie tabeli
 
 
-pdf.showPage() #następna strone
+pdf.showPage() #strona 2
 pdf.setFont("DejaVuSans", 12)
-pdf.drawString(100, pozycja_y -200 , f"Wybrana długość segemntów: {długość_segemntu}")
-pdf.drawString(100, pozycja_y -220 , f"Liczba wystąpień fragmentu w poszczególnych segmentach")
+pdf.drawString(100, pozycja_y, f"Przewidywane ORF w sekwencji oraz umiejscowienie szukanego fragmentu. ")
+#wykres z dodanym zaznaczeniem ORFów
 
-pdf.drawString(100, pozycja_y -240 , f"Średnia liczba wystąpień fragmentu na segment: ")
-pdf.drawString(100, pozycja_y -260 , f"Maksimum wystąpień fragmentu na segment: ")
-pdf.drawString(100, pozycja_y -300 , f"Przewidywane ORF w sekwencji: ")
+
+pdf.showPage() #strona 3
+pdf.setFont("DejaVuSans", 12)
+
+pdf.drawString(100, pozycja_y, f"Wybrana długość segmentów: {długość_segemntu}")
+pdf.drawString(100, pozycja_y -20 , f"Liczba wystąpień fragmentu w poszczególnych segmentach")
+# tutaj wykres słupkowy
+
+pdf.drawString(100, pozycja_y -40 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień} ")
+pdf.drawString(100, pozycja_y -60 , f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
+
 
 pdf.save()
