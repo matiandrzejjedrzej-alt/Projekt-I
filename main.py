@@ -7,7 +7,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Table, TableStyle, Image
 from reportlab.lib import colors
-
+from reportlab.lib.utils import ImageReader
 
 
 #Funkcje++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -187,8 +187,8 @@ plt.title("Liczba wystąpień fragmentu DNA w segmentach")
 plt.xlim(0.5,len(liczba_segmentów) + 0.5)
 plt.xticks(range(1, len(liczba_segmentów) + 1))
 plt.yticks(range(max(liczba_wystąpień) + 1))
-plt.show()
-plt.savefig("Wyniki/wykres_segmenty.png")
+plt.savefig("Wyniki/wykres_segmenty.png", bbox_inches="tight")
+plt.close()
 
 #wykres wystąpienia fragmentu w obrębie sekwencji
 plt.figure()
@@ -235,7 +235,7 @@ pdf.setFont("DejaVuSans", 12)
 pdf.drawString(100, pozycja_y - 40, f"Długość sekwencji: {len(sekwencja)} nt")
 pdf.drawString(100, pozycja_y - 60, f"Szukany fragment: {fragment}")
 pdf.drawString(100, pozycja_y - 80, f"Liczba wystąpień: {len(pozycje)}")
-pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji. ")
+pdf.drawString(100, pozycja_y -100 , f"Pozycje wystąpień fragmentu w sekwencji: ")
 
 #styl tabeli
 tabela_wystąpienia_fragmentu.setStyle(TableStyle([
@@ -259,11 +259,20 @@ pdf.showPage() #strona 3
 pdf.setFont("DejaVuSans", 12)
 
 pdf.drawString(100, pozycja_y, f"Wybrana długość segmentów: {długość_segemntu}")
-pdf.drawString(100, pozycja_y -20 , f"Liczba wystąpień fragmentu w poszczególnych segmentach")
-# tutaj wykres słupkowy
+pdf.drawString(100, pozycja_y -20 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień} ")
+pdf.drawString(100, pozycja_y -40 , f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
+#wykres słupkowy
+wykres = ImageReader("Wyniki/wykres_segmenty.png")
 
-pdf.drawString(100, pozycja_y -40 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień} ")
-pdf.drawString(100, pozycja_y -60 , f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
+pdf.drawImage(
+    wykres,
+    100,
+    300,
+    width=400,
+    height=300
+)
+
+
 
 
 pdf.save()
