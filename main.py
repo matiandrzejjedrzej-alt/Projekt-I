@@ -90,8 +90,11 @@ def wyszukaj_ORF(sekwencja):
 
 #Program++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 print("Program motywy DNA")
-print("Autor Mateusz Nowaczyk")
-while True: #podanie nazwy pliku
+print("Autor: Mateusz Nowaczyk")
+
+
+#podanie nazwy pliku, wczytanie i sprawdzenie sekwencji
+while True:
     print("Plik z sekwencją do analizy umieść w folderze 'Sekwencje'.")
     nazwa_pliku = input("Podaj nazwę pliku za nazwą folderu wraz z jego rozszerzeniem, np. Sekwencje/test.fasta: ")
 
@@ -113,17 +116,20 @@ while True: #podanie nazwy pliku
 
     break
 
-while True: #sprawdzenie, czy fragment składa się z ACGT
+
+#sprawdzenie, czy fragment składa się z ACGT
+while True:
     fragment = input("Podaj szukany fragment DNA: ")
     fragment = "".join(fragment.split()).upper()
 
-    if sprawdz_fragment(fragment):
+    if sprawdz_fragment(fragment): #jeśli ok zwraca True
         break
     else:
         print("Nieprawidłowa sekwencja. Dozwolone znaki to A, T, G i C.")
 
-pozycje = znajdz_fragment(sekwencja, fragment) #szukanie fragmentu w sekwencji
 
+#szukanie fragmentu w sekwencji i zapisanie wystąpień
+pozycje = znajdz_fragment(sekwencja, fragment)
 if len(pozycje) == 0:
     print("Nie znaleziono podanego fragmentu.")
 else:
@@ -131,6 +137,7 @@ else:
     print("Pozycje wystąpień:")
     for pozycja in pozycje:
         print(f"{pozycja[0]}-{pozycja[1]}")
+
 
 #tworzenie tabeli z pozycjami wystąpień
 zestawienie_wystąpień = pd.DataFrame(pozycje, columns = ["Początek","Koniec"])
@@ -143,9 +150,24 @@ dane_wystąpień = [list(zestawienie_wystąpień.columns)] + zestawienie_wystąp
 tabela_wystąpienia_fragmentu = Table(dane_wystąpień)
 
 
-długość_segemntu = int(input("Podaj na jakiej długości segmenty chcesz podzielić sekwencję: "))
+#podział sekwencji na segmenty
+while True:
+    długość_segmentu = input("Podaj na jakiej długości segmenty chcesz podzielić sekwencję: ")
 
-segmenty = podział_segmenty(sekwencja, długość_segemntu) #lista segmentów
+    if not długość_segmentu.isdigit():
+        print("Długość segmentu wyraź za pomocą liczby naturalnej.")
+        continue
+
+    długość_segmentu = int(długość_segmentu)
+
+    if długość_segmentu == 0 or długość_segmentu >= len(sekwencja):
+        print("Długość segmentu musi być większa od 0 i nie większa od długości sekwencji")
+        continue
+
+    break
+
+
+segmenty = podział_segmenty(sekwencja, długość_segmentu) #lista segmentów
 
 pozycje_dla_segmentów = []
 for i in segmenty:
@@ -272,7 +294,7 @@ pdf.drawImage(
 pdf.showPage() #strona 3
 pdf.setFont("DejaVuSans", 12)
 
-pdf.drawString(100, pozycja_y, f"Wybrana długość segmentów: {długość_segemntu}")
+pdf.drawString(100, pozycja_y, f"Wybrana długość segmentów: {długość_segmentu}")
 pdf.drawString(100, pozycja_y -20 , f"Średnia liczba wystąpień fragmentu na segment: {średnia_wystąpień:.2f} ")
 pdf.drawString(100, pozycja_y -40 , f"Maksimum wystąpień fragmentu na segment: {maksimum_wystąpień}")
 #wykres słupkowy
