@@ -117,26 +117,25 @@ while True:
     break
 
 
-#sprawdzenie, czy fragment składa się z ACGT
+#sprawdzenie, czy fragment składa się z ACGT i występuje w sekwencji
 while True:
     fragment = input("Podaj szukany fragment DNA: ")
     fragment = "".join(fragment.split()).upper()
 
-    if sprawdz_fragment(fragment): #jeśli ok zwraca True
-        break
-    else:
+    if not sprawdz_fragment(fragment):
         print("Nieprawidłowa sekwencja. Dozwolone znaki to A, T, G i C.")
+        continue
 
+    pozycje = znajdz_fragment(sekwencja, fragment)
+    if len(pozycje) == 0:
+        print("Nie znaleziono podanego fragmentu. Spróbuj ponownie.")
+        continue
+    break
 
-#szukanie fragmentu w sekwencji i zapisanie wystąpień
-pozycje = znajdz_fragment(sekwencja, fragment)
-if len(pozycje) == 0:
-    print("Nie znaleziono podanego fragmentu.")
-else:
-    print(f"Liczba wystąpień: {len(pozycje)}")
-    print("Pozycje wystąpień:")
-    for pozycja in pozycje:
-        print(f"{pozycja[0]}-{pozycja[1]}")
+print(f"Liczba wystąpień: {len(pozycje)}")
+print("Pozycje wystąpień:")
+for pozycja in pozycje:
+    print(f"{pozycja[0]}-{pozycja[1]}")
 
 
 #tworzenie tabeli z pozycjami wystąpień

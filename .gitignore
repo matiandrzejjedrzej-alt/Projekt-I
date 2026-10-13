@@ -1,0 +1,7 @@
+# Pliki wynikowe programu
+/Wyniki/*.csv
+/Wyniki/*.pdf
+/Wyniki/*.png
+
+# Starsza lokalizacja pliku ORF
+/ORFs.csv
