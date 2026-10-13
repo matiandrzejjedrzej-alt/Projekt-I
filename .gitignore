@@ -1,7 +1,11 @@
-# Pliki wynikowe programu
+# Wyniki generowane przez program
 /Wyniki/*.csv
 /Wyniki/*.pdf
 /Wyniki/*.png
 
-# Starsza lokalizacja pliku ORF
+# Wyniki generowane w głównym folderze projektu
 /ORFs.csv
+/orfy.csv
+/wykres_pozycje.png
+/wykres_segmenty.png
+/wyniki.csv
