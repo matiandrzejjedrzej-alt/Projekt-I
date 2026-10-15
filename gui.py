@@ -415,18 +415,31 @@ def wykonaj_analize():
     figura_pozycje = Figure(figsize=(7, 4), dpi=100)
     os_pozycje = figura_pozycje.add_subplot(111)
 
+    # Wystąpienia motywu DNA – górny tor
     for poczatek, koniec in pozycje:
-        os_pozycje.hlines(0.005, poczatek, koniec)
+        os_pozycje.hlines(
+            1, poczatek, koniec,
+            color="blue", linewidth=2
+        )
 
+    # Potencjalne ORF-y – dolny tor
     for poczatek, koniec, _ in lista_orfow:
-        os_pozycje.hlines(0.01, poczatek, koniec, color="red")
+        os_pozycje.hlines(
+            0, poczatek, koniec,
+            color="red", linewidth=2
+        )
 
-    os_pozycje.set_title("Pozycje motywu i potencjalnych ORF-ów")
-    os_pozycje.set_xlabel("Pozycja [nt]")
+    os_pozycje.set_title(
+        "Pozycje wystąpień motywu DNA i potencjalnych ORF-ów"
+    )
+    os_pozycje.set_xlabel("Pozycja w sekwencji [nt]")
     os_pozycje.set_xlim(1, max(2, len(sekwencja)))
-    os_pozycje.set_ylim(0, 0.1)
-    os_pozycje.set_yticks([0.005, 0.01])
-    os_pozycje.set_yticklabels(["Motyw DNA", "ORF"])
+
+    os_pozycje.set_ylim(-0.5, 1.5)
+    os_pozycje.set_yticks([0, 1])
+    os_pozycje.set_yticklabels(["ORF-y", "Motyw DNA"])
+
+    os_pozycje.grid(axis="x", linestyle="--", alpha=0.3)
 
     figura_pozycje.tight_layout()
     figura_pozycje.savefig(
