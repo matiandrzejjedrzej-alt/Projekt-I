@@ -728,8 +728,52 @@ przewijanie_orf.pack(side="right", fill="y")
 
 
 # Zakładka Wykresy
-ramka_wykresow = ttk.Frame(zakladka_wykresy)
-ramka_wykresow.pack(fill="both", expand=True)
+canvas_wykresow = tk.Canvas(
+    zakladka_wykresy,
+    highlightthickness=0
+)
+
+przewijanie_wykresow = ttk.Scrollbar(
+    zakladka_wykresy,
+    orient="vertical",
+    command=canvas_wykresow.yview
+)
+
+canvas_wykresow.configure(
+    yscrollcommand=przewijanie_wykresow.set
+)
+
+przewijanie_wykresow.pack(side="right", fill="y")
+canvas_wykresow.pack(side="left", fill="both", expand=True)
+
+ramka_wykresow = ttk.Frame(canvas_wykresow)
+
+okno_wykresow = canvas_wykresow.create_window(
+    (0, 0),
+    window=ramka_wykresow,
+    anchor="nw"
+)
+
+def aktualizuj_obszar_przewijania(event=None):
+    canvas_wykresow.configure(
+        scrollregion=canvas_wykresow.bbox("all")
+    )
+
+def dopasuj_szerokosc_wykresow(event):
+    canvas_wykresow.itemconfigure(
+        okno_wykresow,
+        width=event.width
+    )
+
+ramka_wykresow.bind(
+    "<Configure>",
+    aktualizuj_obszar_przewijania
+)
+
+canvas_wykresow.bind(
+    "<Configure>",
+    dopasuj_szerokosc_wykresow
+)
 
 
 # Zakładka Raporty
