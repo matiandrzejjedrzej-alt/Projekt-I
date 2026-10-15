@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib
+import os
 
 matplotlib.use("TkAgg")
 
@@ -269,6 +270,23 @@ def utworz_raport(
 # =========================================================
 # GŁÓWNA FUNKCJA ANALIZY
 # =========================================================
+def otworz_raport():
+    sciezka_raportu = KATALOG_WYNIKOW / "raport.pdf"
+
+    if not sciezka_raportu.exists():
+        messagebox.showwarning(
+            "Brak raportu",
+            "Najpierw wykonaj analizę, aby wygenerować raport PDF."
+        )
+        return
+
+    try:
+        os.startfile(str(sciezka_raportu))
+    except OSError as blad:
+        messagebox.showerror(
+            "Błąd otwierania raportu",
+            f"Nie udało się otworzyć raportu.\n{blad}"
+        )
 
 def wykonaj_analize():
     global ostatnia_sekwencja, ostatni_motyw
@@ -593,6 +611,12 @@ zakladka_wystapienia = ttk.Frame(zakladki, padding=10)
 zakladka_orf = ttk.Frame(zakladki, padding=10)
 zakladka_wykresy = ttk.Frame(zakladki, padding=10)
 zakladka_raporty = ttk.Frame(zakladki, padding=10)
+
+ttk.Button(
+    zakladka_raporty,
+    text="Otwórz raport",
+    command=otworz_raport
+).pack(pady=10)
 
 zakladki.add(zakladka_analiza, text="Analiza")
 zakladki.add(zakladka_wystapienia, text="Wystąpienia")
