@@ -12,6 +12,7 @@ matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from reportlab.platypus import PageBreak
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -223,7 +224,7 @@ def utworz_raport(
             height=260,
             kind="proportional"
         ))
-
+    elementy.append(PageBreak())
     elementy.append(Spacer(1, 12))
     elementy.append(Paragraph(
         "Pozycje motywu i potencjalnych ORF-ów",
