@@ -484,6 +484,8 @@ def wykonaj_analize():
         widok.draw()
         widok.get_tk_widget().pack(fill="both", expand=True, padx=5, pady=5)
 
+        podlacz_przewijanie(widok.get_tk_widget())
+
     # Informacje o wynikach
     etykieta_wynikow.config(
         text=(
@@ -775,6 +777,19 @@ canvas_wykresow.bind(
     dopasuj_szerokosc_wykresow
 )
 
+def przewijaj_kolkiem(event):
+    canvas_wykresow.yview_scroll(
+        -1 * (event.delta // 120),
+        "units"
+    )
+    return "break"
+
+
+def podlacz_przewijanie(widget):
+    widget.bind("<MouseWheel>", przewijaj_kolkiem)
+
+    for element in widget.winfo_children():
+        podlacz_przewijanie(element)
 
 # Zakładka Raporty
 etykieta_raportu = ttk.Label(
