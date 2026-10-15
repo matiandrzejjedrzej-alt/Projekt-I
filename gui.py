@@ -458,6 +458,10 @@ def wykonaj_analize():
     wypelnij_tabele(tabela_pozycji, pozycje)
     wypelnij_tabele(tabela_orfow, lista_orfow)
 
+    etykieta_liczba_orfow.config(
+        text=f"Liczba znalezionych ORF-ów: {len(lista_orfow)}"
+    )
+
     # Aktualizacja wykresów w GUI
     for widget in ramka_wykresow.winfo_children():
         widget.destroy()
@@ -475,7 +479,6 @@ def wykonaj_analize():
             f"Liczba wystąpień: {len(pozycje)}\n"
             f"Średnia liczba wystąpień na segment: {srednia:.2f}\n"
             f"Maksimum w segmencie: {maksimum}\n"
-            f"Liczba znalezionych ORF-ów: {len(lista_orfow)}"
         )
     )
 
@@ -681,6 +684,13 @@ tabela_pozycji.pack(fill="both", expand=True)
 
 
 # Zakładka ORF-y
+etykieta_liczba_orfow = ttk.Label(
+    zakladka_orf,
+    text="Liczba znalezionych ORF-ów: 0",
+    font=("Arial", 11, "bold")
+)
+etykieta_liczba_orfow.pack(anchor="w", pady=(0, 10))
+
 tabela_orfow = ttk.Treeview(
     zakladka_orf,
     columns=("Początek ORF", "Koniec ORF", "Sekwencja ORF"),
