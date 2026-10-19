@@ -749,7 +749,8 @@ zakladka_raporty = ttk.Frame(zakladki, padding=10)
 ttk.Button(
     zakladka_raporty,
     text="Otwórz raport",
-    command=otworz_raport
+    command=otworz_raport,
+    style="Accent.TButton"
 ).pack(pady=10)
 
 zakladki.add(zakladka_analiza, text="Analiza")
