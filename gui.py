@@ -24,6 +24,22 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
 
+# Kolory aplikacji DNA Analyzer
+KOLOR_TLA = "#F4F7FB"
+KOLOR_PANELU = "#FFFFFF"
+KOLOR_GRANATOWY = "#17365D"
+KOLOR_TURKUSOWY = "#159A9C"
+KOLOR_TURKUS_HOVER = "#117C80"
+KOLOR_TEKSTU = "#263445"
+KOLOR_POMOCNICZY = "#64748B"
+KOLOR_RAMKI = "#DCE4ED"
+
+# Czcionki
+CZCIONKA_GLOWNA = ("Segoe UI", 10)
+CZCIONKA_NAGLOWKA = ("Segoe UI", 17, "bold")
+CZCIONKA_SEKCJI = ("Segoe UI", 11, "bold")
+
+
 
 # =========================================================
 # ŚCIEŻKI DO FOLDERÓW
@@ -558,6 +574,79 @@ root.title("Analiza sekwencji DNA")
 root.geometry("1000x750")
 root.minsize(800, 600)
 
+# Ustawienia wyglądu aplikacji
+root.configure(bg=KOLOR_TLA)
+
+styl = ttk.Style()
+styl.theme_use("clam")
+
+styl.configure(".", font=CZCIONKA_GLOWNA)
+
+styl.configure(
+    "TNotebook",
+    background=KOLOR_TLA,
+    borderwidth=0
+)
+
+styl.configure(
+    "TNotebook.Tab",
+    background="#E5ECF4",
+    foreground=KOLOR_GRANATOWY,
+    padding=(16, 9),
+    font=("Segoe UI", 10, "bold")
+)
+
+styl.map(
+    "TNotebook.Tab",
+    background=[("selected", KOLOR_PANELU)],
+    foreground=[("selected", KOLOR_TURKUSOWY)]
+)
+
+styl.configure(
+    "Treeview",
+    background=KOLOR_PANELU,
+    foreground=KOLOR_TEKSTU,
+    fieldbackground=KOLOR_PANELU,
+    rowheight=27,
+    borderwidth=0,
+    font=CZCIONKA_GLOWNA
+)
+
+styl.configure(
+    "Treeview.Heading",
+    background=KOLOR_GRANATOWY,
+    foreground=KOLOR_PANELU,
+    font=("Segoe UI", 10, "bold"),
+    padding=7
+)
+
+styl.map(
+    "Treeview",
+    background=[("selected", "#CDEFEF")],
+    foreground=[("selected", KOLOR_GRANATOWY)]
+)
+
+styl.configure("TEntry", padding=6)
+styl.configure("TButton", padding=(12, 7), font=("Segoe UI", 10))
+
+styl.configure(
+    "Accent.TButton",
+    background=KOLOR_TURKUSOWY,
+    foreground=KOLOR_PANELU,
+    padding=(14, 9),
+    font=("Segoe UI", 10, "bold"),
+    borderwidth=0
+)
+
+styl.map(
+    "Accent.TButton",
+    background=[
+        ("active", KOLOR_TURKUS_HOVER),
+        ("pressed", KOLOR_TURKUS_HOVER)
+    ],
+    foreground=[("active", KOLOR_PANELU)]
+)
+
 styl = ttk.Style(root)
 styl.configure("TButton", padding=6)
 styl.configure("TNotebook.Tab", padding=(12, 7))
@@ -591,6 +680,7 @@ panel.pack(fill="x", padx=12, pady=5)
 ttk.Button(
     panel,
     text="Wybierz plik DNA",
+    style="Accent.TButton",
     command=wybierz_plik
 ).grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
@@ -616,13 +706,34 @@ ttk.Entry(
 ttk.Button(
     panel,
     text="URUCHOM ANALIZĘ",
-    command=wykonaj_analize
+    command=wykonaj_analize,
+    style="Accent.TButton"
 ).grid(row=2, column=0, columnspan=4, pady=10)
 
 
+# Nagłówek główny aplikacji
+ramka_naglowka = tk.Frame(root, bg=KOLOR_TLA)
+ramka_naglowka.pack(fill="x", padx=20, pady=(16, 8))
+
+tk.Label(
+    ramka_naglowka,
+    text="DNA Analyzer",
+    font=CZCIONKA_NAGLOWKA,
+    fg=KOLOR_GRANATOWY,
+    bg=KOLOR_TLA
+).pack(anchor="w")
+
+tk.Label(
+    ramka_naglowka,
+    text="Analiza sekwencji DNA, wyszukiwanie motywów i potencjalnych ORF-ów",
+    font=CZCIONKA_GLOWNA,
+    fg=KOLOR_POMOCNICZY,
+    bg=KOLOR_TLA
+).pack(anchor="w", pady=(2, 0))
+
 # Zakładki
 zakladki = ttk.Notebook(root)
-zakladki.pack(fill="both", expand=True, padx=12, pady=8)
+zakladki.pack(fill="both", expand=True, padx=12, pady=(0, 10))
 
 zakladka_analiza = ttk.Frame(zakladki, padding=10)
 zakladka_wystapienia = ttk.Frame(zakladki, padding=10)
@@ -654,8 +765,23 @@ ramka_podgladu = ttk.Frame(zakladka_analiza)
 ramka_podgladu.pack(fill="both", expand=True)
 
 pole_podgladu = tk.Text(
-    ramka_podgladu, wrap="none", height=20, font=("Consolas", 10),
-    state="disabled"
+    ramka_podgladu,
+    wrap="none",
+    height=20,
+    font=("Consolas", 11),
+    state="disabled",
+    bg=KOLOR_PANELU,
+    fg=KOLOR_TEKSTU,
+    insertbackground=KOLOR_TURKUSOWY,
+    selectbackground="#CDEFEF",
+    selectforeground=KOLOR_GRANATOWY,
+    relief="flat",
+    borderwidth=1,
+    highlightthickness=1,
+    highlightbackground=KOLOR_RAMKI,
+    highlightcolor=KOLOR_TURKUSOWY,
+    padx=10,
+    pady=10
 )
 
 przewijanie_y = ttk.Scrollbar(
@@ -693,16 +819,27 @@ tabela_pozycji = ttk.Treeview(
 
 for kolumna in ("Początek", "Koniec"):
     tabela_pozycji.heading(kolumna, text=kolumna)
-    tabela_pozycji.column(kolumna, width=150, anchor="center")
+    tabela_pozycji.column(
+        kolumna,
+        width=180,
+        minwidth=120,
+        anchor="center",
+        stretch=True
+    )
 
-tabela_pozycji.pack(fill="both", expand=True)
+tabela_pozycji.pack(
+    fill="both",
+    expand=True,
+    padx=5,
+    pady=5
+)
 
 
 # Zakładka ORF-y
 etykieta_liczba_orfow = ttk.Label(
     zakladka_orf,
     text="Liczba znalezionych ORF-ów: 0",
-    font=("Arial", 11, "bold")
+    font=CZCIONKA_SEKCJI
 )
 etykieta_liczba_orfow.pack(anchor="w", pady=(0, 10))
 
@@ -716,9 +853,29 @@ tabela_orfow.heading("Początek ORF", text="Początek ORF")
 tabela_orfow.heading("Koniec ORF", text="Koniec ORF")
 tabela_orfow.heading("Sekwencja ORF", text="Sekwencja ORF")
 
-tabela_orfow.column("Początek ORF", width=110, anchor="center")
-tabela_orfow.column("Koniec ORF", width=110, anchor="center")
-tabela_orfow.column("Sekwencja ORF", width=600, anchor="w")
+tabela_orfow.column(
+    "Początek ORF",
+    width=130,
+    minwidth=110,
+    anchor="center",
+    stretch=False
+)
+
+tabela_orfow.column(
+    "Koniec ORF",
+    width=130,
+    minwidth=110,
+    anchor="center",
+    stretch=False
+)
+
+tabela_orfow.column(
+    "Sekwencja ORF",
+    width=600,
+    minwidth=250,
+    anchor="w",
+    stretch=True
+)
 
 przewijanie_orf = ttk.Scrollbar(
     zakladka_orf, orient="vertical", command=tabela_orfow.yview
