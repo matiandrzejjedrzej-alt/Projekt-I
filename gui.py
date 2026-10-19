@@ -638,6 +638,11 @@ styl.configure(
     borderwidth=0
 )
 
+styl.configure(
+    "Wykresy.TFrame",
+    background=KOLOR_TLA
+)
+
 styl.map(
     "Accent.TButton",
     background=[
@@ -889,7 +894,8 @@ przewijanie_orf.pack(side="right", fill="y")
 # Zakładka Wykresy
 canvas_wykresow = tk.Canvas(
     zakladka_wykresy,
-    highlightthickness=0
+    highlightthickness=0,
+    background=KOLOR_TLA
 )
 
 przewijanie_wykresow = ttk.Scrollbar(
@@ -905,7 +911,10 @@ canvas_wykresow.configure(
 przewijanie_wykresow.pack(side="right", fill="y")
 canvas_wykresow.pack(side="left", fill="both", expand=True)
 
-ramka_wykresow = ttk.Frame(canvas_wykresow)
+ramka_wykresow = ttk.Frame(
+    canvas_wykresow,
+    style="Wykresy.TFrame"
+)
 
 okno_wykresow = canvas_wykresow.create_window(
     (0, 0),
