@@ -261,9 +261,39 @@ def utworz_raport(
     elementy.append(Spacer(1, 12))
     elementy.append(Paragraph("Potencjalne ORF-y", style["Heading2"]))
 
-    dane_orf = [
-        ["Początek ORF", "Koniec ORF", "Sekwencja ORF"]
-    ] + tabela_orfow
+    # Style tekstu w tabeli ORF
+    styl_naglowka_orf = ParagraphStyle(
+        name="NaglowekORF",
+        parent=style["Normal"],
+        fontName=czcionka_bold,
+        fontSize=7,
+        leading=9,
+        wordWrap="CJK"
+    )
+
+    styl_tekstu_orf = ParagraphStyle(
+        name="TekstORF",
+        parent=style["Normal"],
+        fontName=czcionka,
+        fontSize=6,
+        leading=8,
+        wordWrap="CJK"
+    )
+
+    # Nagłówki tabeli
+    dane_orf = [[
+        Paragraph("Początek ORF", styl_naglowka_orf),
+        Paragraph("Koniec ORF", styl_naglowka_orf),
+        Paragraph("Sekwencja ORF", styl_naglowka_orf)
+    ]]
+
+    # Wiersze z wynikami
+    for poczatek, koniec, sekwencja_orf in tabela_orfow:
+        dane_orf.append([
+            str(poczatek),
+            str(koniec),
+            Paragraph(sekwencja_orf, styl_tekstu_orf)
+        ])
 
     tabela_orf = Table(
         dane_orf,
@@ -272,11 +302,15 @@ def utworz_raport(
     )
 
     tabela_orf.setStyle(TableStyle([
-        ("FONTNAME", (0, 0), (-1, -1), czcionka),
+        ("FONTNAME", (0, 0), (1, -1), czcionka),
         ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-        ("FONTSIZE", (0, 0), (-1, -1), 7),
-        ("VALIGN", (0, 0), (-1, -1), "TOP")
+        ("FONTSIZE", (0, 0), (1, -1), 7),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4)
     ]))
 
     elementy.append(tabela_orf)
@@ -408,13 +442,52 @@ def wykonaj_analize():
     )
 
     # Wykres słupkowy
-    figura_segmenty = Figure(figsize=(7, 4), dpi=100)
+    figura_segmenty = Figure(
+        figsize=(7, 4),
+        dpi=100,
+        facecolor=KOLOR_PANELU
+    )
     os_segmenty = figura_segmenty.add_subplot(111)
 
-    os_segmenty.bar(liczba_segmentow, liczba_wystapien)
-    os_segmenty.set_xlabel("Segment")
-    os_segmenty.set_ylabel("Liczba wystąpień")
-    os_segmenty.set_title("Liczba wystąpień motywu w segmentach")
+    # Tło obszaru wykresu
+    os_segmenty.set_facecolor(KOLOR_PANELU)
+
+    # Słupki w kolorze turkusowym
+    os_segmenty.bar(
+        liczba_segmentow,
+        liczba_wystapien,
+        color=KOLOR_TURKUSOWY,
+        edgecolor=KOLOR_GRANATOWY,
+        linewidth=0.5
+    )
+
+    # Opisy osi i tytuł
+    os_segmenty.set_xlabel("Segment", color=KOLOR_TEKSTU)
+    os_segmenty.set_ylabel("Liczba wystąpień", color=KOLOR_TEKSTU)
+    os_segmenty.set_title(
+        "Liczba wystąpień motywu w segmentach",
+        color=KOLOR_GRANATOWY,
+        fontweight="bold"
+    )
+
+    # Delikatna siatka pozioma
+    os_segmenty.set_axisbelow(True)
+    os_segmenty.grid(
+        axis="y",
+        color=KOLOR_RAMKI,
+        linestyle="-",
+        linewidth=0.8
+    )
+
+    # Kolory etykiet osi
+    os_segmenty.tick_params(colors=KOLOR_TEKSTU)
+
+    # Kolor i grubość ramek wykresu
+    for ramka in os_segmenty.spines.values():
+        ramka.set_color(KOLOR_RAMKI)
+        ramka.set_linewidth(0.8)
+
+
     os_segmenty.set_xlim(0.5, len(liczba_segmentow) + 0.5)
 
     # Ograniczenie liczby etykiet na osi X dla długich sekwencji
@@ -455,7 +528,23 @@ def wykonaj_analize():
     os_pozycje.set_yticks([0, 1])
     os_pozycje.set_yticklabels(["ORF-y", "Motyw DNA"])
 
-    os_pozycje.grid(axis="x", linestyle="--", alpha=0.3)
+    os_pozycje.grid(
+        axis="x",
+        color=KOLOR_RAMKI,
+        linestyle="--",
+        linewidth=0.8
+    )
+
+    os_pozycje.tick_params(colors=KOLOR_TEKSTU)
+
+    for ramka in os_pozycje.spines.values():
+        ramka.set_color(KOLOR_RAMKI)
+        ramka.set_linewidth(0.8)
+
+    os_pozycje.xaxis.label.set_color(KOLOR_TEKSTU)
+    os_pozycje.yaxis.label.set_color(KOLOR_TEKSTU)
+    os_pozycje.title.set_color(KOLOR_GRANATOWY)
+    os_pozycje.title.set_fontweight("bold")
 
     figura_pozycje.tight_layout()
     figura_pozycje.savefig(
@@ -573,6 +662,7 @@ root = tk.Tk()
 root.title("Analiza sekwencji DNA")
 root.geometry("1000x750")
 root.minsize(800, 600)
+
 
 # Ustawienia wyglądu aplikacji
 root.configure(bg=KOLOR_TLA)
