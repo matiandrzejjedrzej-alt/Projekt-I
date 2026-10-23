@@ -210,6 +210,10 @@ def utworz_raport(
 
     elementy.append(tabela_pozycji)
     elementy.append(Spacer(1, 18))
+
+    # Przejście do nowej strony
+    elementy.append(PageBreak())
+
     elementy.append(Paragraph("Statystyka segmentów", style["Heading2"]))
     elementy.append(Paragraph(
         f"Długość segmentu: {dlugosc_segmentu} nt",
